@@ -1,0 +1,11 @@
+name: LogicTags
+version: '0.0.1'
+main: de.frinshhd.logicTags.Main
+api-version: '1.21'
+author: "FrinshHD"
+
+commands:
+  changetag:
+    description: Changes the tag of a player.
+    usage: /changetag <tag>
+    default: op
