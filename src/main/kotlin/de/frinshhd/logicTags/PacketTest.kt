@@ -18,8 +18,8 @@ class PacketTest : Listener {
         val player: Player = event.player
 
         player.sendMessage("PacketTest: Packet sent to you!")
-        Main.tagsHandler.addPlayerTag(player, "§7Test §4${player.name}", true)
 
+        Main.tagsHandler.addPlayerTag(player, Main.playerTagManager.getTag(player))
     }
 
     fun test(player: Player) {

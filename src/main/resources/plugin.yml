@@ -9,3 +9,7 @@ commands:
     description: Changes the tag of a player.
     usage: /changetag <tag>
     default: op
+  removetag:
+    description: Removes the tag of a player.
+    usage: /removetag
+    default: op

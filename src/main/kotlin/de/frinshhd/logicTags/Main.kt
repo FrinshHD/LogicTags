@@ -4,6 +4,7 @@ import com.github.retrooper.packetevents.PacketEvents
 import de.frinshhd.logicTags.utils.DynamicListeners
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
@@ -16,6 +17,10 @@ class Main : JavaPlugin() {
             private set
         lateinit var tagsHandler: TagsHandler
             private set
+        lateinit var playerTagManager: PlayerTagManager
+            private set
+
+        fun getTextFormated(text: String) = ChatColor.translateAlternateColorCodes('&', text)
     }
 
     override fun onLoad() {
@@ -30,6 +35,7 @@ class Main : JavaPlugin() {
 
         // Register commands
         Bukkit.getPluginCommand("changetag")?.setExecutor(ChangeTagCommand())
+        Bukkit.getPluginCommand("removetag")?.setExecutor(RemoveTagCommand())
         
         println("LogicTags enabled!")
     }
@@ -42,6 +48,8 @@ class Main : JavaPlugin() {
 
     private fun setup() {
         PacketEvents.getAPI().init()
+
+        saveDefaultConfig()
 
         instance.logger.level = Level.ALL
 
@@ -56,5 +64,6 @@ class Main : JavaPlugin() {
         DynamicListeners.load(classNames, canonicalName)
 
         tagsHandler = TagsHandler()
+        playerTagManager = PlayerTagManager()
     }
 }
