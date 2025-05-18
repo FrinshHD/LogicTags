@@ -12,6 +12,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.protocol.player.User
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction
 import com.github.retrooper.packetevents.wrapper.play.server.*
+import de.frinshhd.logicTags.utils.MessageFormat
 import de.frinshhd.logicTags.utils.PlayerHashMap
 import de.frinshhd.logicTags.utils.PlayerHashSet
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
@@ -62,7 +63,7 @@ class TagsHandler {
 
         val user: User = PacketEvents.getAPI().playerManager.getUser(player)
 
-        if (playerToMount != player) {
+        if (playerToMount != player && Main.settingsManager.hasCustomTeams()) {
             user.sendPacket(WrapperPlayServerTeams(
                 "customName${playerToMount.name}",
                 WrapperPlayServerTeams.TeamMode.CREATE,
@@ -104,7 +105,7 @@ class TagsHandler {
         )
 
         if (text != null) {
-            entityData.add(EntityData(23, EntityDataTypes.ADV_COMPONENT, Component.text("${Main.getTextFormated(text)}\n\n")))
+            entityData.add(EntityData(23, EntityDataTypes.ADV_COMPONENT, Component.text("${MessageFormat.build(text)}\n\n")))
         }
 
         // MetadataPacket
@@ -139,6 +140,12 @@ class TagsHandler {
         user.sendPacket(entityRemovePacket)
 
         if (!isPassive) tagData.players.remove(player)
+    }
+
+    fun removePlayerTag(player: Player) {
+        val tagData = tagsMap[player] ?: return
+
+        removePlayerTag(tagData)
     }
 
     fun removePlayerTag(tagData: TagData, isPassive: Boolean = false) {

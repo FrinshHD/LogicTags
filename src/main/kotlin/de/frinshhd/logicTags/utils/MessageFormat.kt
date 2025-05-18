@@ -1,6 +1,7 @@
 package de.frinshhd.logicTags.utils
 
 import org.bukkit.ChatColor
+import org.bukkit.command.CommandSender
 import java.util.regex.Pattern
 
 object MessageFormat {
@@ -22,6 +23,14 @@ object MessageFormat {
             matcher = pattern.matcher(message)
         }
         return ChatColor.translateAlternateColorCodes('&', message)
+    }
+
+    fun send(sender: CommandSender, message: String) {
+        sender.sendMessage(build(message))
+    }
+
+    fun sendNoPerm(sender: CommandSender) {
+        sender.sendMessage(build("&cYou don't have permission to do this!"))
     }
 }
 

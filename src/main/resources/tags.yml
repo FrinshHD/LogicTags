@@ -1,0 +1,13 @@
+tags:
+  - id: funnyTag
+    name: Funny
+    description: A tag for funny content
+    permission: logictags.funny
+  - id: coolTag
+    name: Cool
+    description: A tag for cool players
+    permission: logictags.cool
+  - id: proTag
+    name: Pro
+    description: A tag for professional players
+    permission: logictags.pro
