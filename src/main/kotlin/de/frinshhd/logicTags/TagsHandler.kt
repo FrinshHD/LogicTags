@@ -99,7 +99,7 @@ class TagsHandler {
         user.sendPacket(spawnPacket)
 
         // MetadataPacket
-        val entityData = mutableListOf(
+        val entityData = mutableListOf<EntityData<*>>(
             EntityData(15, EntityDataTypes.BYTE, 1.toByte()),
             EntityData(25, EntityDataTypes.INT, 0),
         )

@@ -44,10 +44,6 @@ class Main : JavaPlugin() {
 
         setup()
 
-        // Register commands
-        Bukkit.getPluginCommand("changetag")?.setExecutor(ChangeTagCommand())
-        Bukkit.getPluginCommand("removetag")?.setExecutor(RemoveTagCommand())
-
         println("LogicTags enabled!")
     }
 
