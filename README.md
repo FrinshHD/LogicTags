@@ -1,4 +1,4 @@
-# LogicTags
+![](https://cdn.modrinth.com/data/KyEGDSv3/images/df606c5a2d6dd813c41b2ef2cad8381861ccb9ac.png)
 
 ## Description
 
