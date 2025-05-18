@@ -164,7 +164,7 @@ class TagsHandlerPacketListener: PacketListener {
         when (event.packetType) {
             PacketType.Play.Server.SPAWN_ENTITY -> {
                 if (event.packetType != PacketType.Play.Server.SPAWN_ENTITY)
-                    return;
+                    return
 
                 val spawnEntityPacket = WrapperPlayServerSpawnEntity(event)
 
@@ -180,7 +180,7 @@ class TagsHandlerPacketListener: PacketListener {
                 val destroyEntitiesPacket = WrapperPlayServerDestroyEntities(event)
 
                 destroyEntitiesPacket.entityIds.forEach { entityId ->
-                    val entity: Entity = SpigotReflectionUtil.getEntityById(player.world, entityId) ?: return@forEach
+                    val entity: Entity = SpigotConversionUtil.getEntityById(player.world, entityId) ?: return@forEach
 
                     if (entity.type != EntityType.PLAYER) return@forEach
 

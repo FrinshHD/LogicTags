@@ -10,7 +10,6 @@ import org.incendo.cloud.annotations.AnnotationParser
 import org.incendo.cloud.bukkit.CloudBukkitCapabilities
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.LegacyPaperCommandManager
-import org.incendo.cloud.paper.PaperCommandManager
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import java.util.logging.Level
@@ -20,7 +19,6 @@ class Main : JavaPlugin() {
 
     private lateinit var commandManager: LegacyPaperCommandManager<CommandSender>
     private lateinit var annotationParser: AnnotationParser<CommandSender>
-    private lateinit var manager: PaperCommandManager<CommandSender>
 
     companion object {
         lateinit var instance: Main
@@ -80,10 +78,10 @@ class Main : JavaPlugin() {
 
 
     private fun setupCommands() {
-        commandManager = LegacyPaperCommandManager.createNative(instance, ExecutionCoordinator.simpleCoordinator());
+        commandManager = LegacyPaperCommandManager.createNative(instance, ExecutionCoordinator.simpleCoordinator())
 
         if (commandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER))
-            commandManager.registerBrigadier();
+            commandManager.registerBrigadier()
 
         annotationParser = AnnotationParser(commandManager, CommandSender::class.java)
 
