@@ -1,5 +1,5 @@
 name: LogicTags
-version: '0.0.1'
+version: ${project.version}
 main: de.frinshhd.logicTags.Main
 api-version: '1.21'
 author: "FrinshHD"

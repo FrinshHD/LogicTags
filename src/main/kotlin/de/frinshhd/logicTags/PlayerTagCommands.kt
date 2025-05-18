@@ -5,11 +5,33 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
+import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 
 class PlayerTagCommands {
 
-    @Command("tag list")
+    companion object {
+        const val COMMAND_PREFIX = "tag"
+    }
+
+    @Command("$COMMAND_PREFIX")
+    @CommandDescription("Command for LogicTags")
+    fun tag(sender: CommandSender) {
+        if (sender !is Player) {
+            MessageFormat.send(sender, "&cThis command can only be used by players.")
+            return
+        }
+
+        val tag = Main.playerTagManager.getTag(sender)
+        if (tag == null) {
+            MessageFormat.send(sender, "&cYou don't have a tag set.")
+            return
+        }
+
+        MessageFormat.send(sender, "&7Your current tag is &r$tag&7.")
+    }
+
+    @Command("$COMMAND_PREFIX list")
     fun tagList(sender: CommandSender) {
         val tagsMap = Main.playerTagManager.getTagsMapPlayer(sender)
 
@@ -19,23 +41,23 @@ class PlayerTagCommands {
         }
 
         val tagsMessage = tagsMap.entries
-            .joinToString(separator = "\n", prefix = "&6Available Tags:\n") { (id, tag) ->
-                "&eID: &a$id &7- &bName: ${tag.name}"
+            .joinToString(separator = "\n", prefix = "&7Available Tags:\n") { (id, tag) ->
+                "&7ID: &d$id &7- Name: &d${tag.name}"
             }
 
         MessageFormat.send(sender, tagsMessage)
     }
 
-    @Command("tag select <id>")
+    @Command("$COMMAND_PREFIX select <id>")
     fun tagSelect(sender: CommandSender, @Argument("id") id: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the id: &e$id")
+            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the id: &d$id")
             return
         }
 
         if (id == null) {
             val availableIds = Main.playerTagManager.getTagsMap().keys.joinToString(", ")
-            MessageFormat.send(sender, "&cPlease provide a tag ID. Available IDs: &e$availableIds")
+            MessageFormat.send(sender, "&cPlease provide a tag ID. Available IDs: &d$availableIds")
             return
         }
 
@@ -46,14 +68,14 @@ class PlayerTagCommands {
         }
 
         Main.tagsHandler.updateText(sender, tagDetails.name)
-        MessageFormat.send(sender, "&aTag changed to &b${tagDetails.name}&a.")
+        MessageFormat.send(sender, "&7Tag changed to &d${tagDetails.name}&7.")
     }
 
-    @Command("tag change <tag>")
-    @Permission("logictags.change")
+    @Command("$COMMAND_PREFIX change <tag>")
+    @Permission("${Main.PERMISSION_PREFIX}.change")
     fun tagChange(sender: CommandSender, @Argument("tag") tag: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the tag: &e$tag")
+            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the tag: &d$tag")
             return
         }
 
@@ -63,10 +85,10 @@ class PlayerTagCommands {
         }
 
         Main.tagsHandler.updateText(sender, tag)
-        MessageFormat.send(sender, "&aTag changed to &b$tag&a.")
+        MessageFormat.send(sender, "&7Tag changed to &d$tag&7.")
     }
 
-    @Command("tag remove")
+    @Command("$COMMAND_PREFIX remove")
     fun tagRemove(sender: CommandSender) {
         if (sender !is Player) {
             MessageFormat.send(sender, "&cThis command can only be used by players.")
@@ -74,27 +96,36 @@ class PlayerTagCommands {
         }
 
         Main.tagsHandler.removePlayerTag(sender)
-        MessageFormat.send(sender, "&aTag removed.")
+        MessageFormat.send(sender, "&7Tag removed.")
     }
 
-    @Command("tag reload")
-    @Permission("logictags.reload")
+    @Command("$COMMAND_PREFIX reload")
+    @Permission("${Main.PERMISSION_PREFIX}.reload")
     fun tagReload(sender: CommandSender) {
         Main.playerTagManager.reloadTags()
-        MessageFormat.send(sender, "&aTags reloaded.")
+        MessageFormat.send(sender, "&7Tags reloaded.")
     }
 
-    @Command("tag help")
+    @Command("$COMMAND_PREFIX help")
     fun tagHelp(sender: CommandSender) {
-        val helpMessage = """
-                             &6Tag Commands Help:
-                             &e/tag list &7- &bList all available tags.
-                             &e/tag select <id> &7- &bSelect a tag by ID.
-                             &e/tag change <tag> &7- &bChange your tag to the specified tag. &8(Permission: logictags.change)
-                             &e/tag remove &7- &bRemove your current tag.
-                             &e/tag reload &7- &bReload the tags configuration. &8(Permission: logictags.reload)
-                         """.trimIndent()
+        val commands = listOf(
+            null to "&7/tag &7- View your current tag",
+            null to "&7/tag list &7- List all available tags",
+            null to "&7/tag select <id> &7- Select a tag by ID",
+            "${Main.PERMISSION_PREFIX}.change" to "&7/tag change <tag> &7- Change your tag to the specified text",
+            null to "&7/tag remove &7- Remove your current tag",
+            "${Main.PERMISSION_PREFIX}.reload" to "&7/tag reload &7- Reload the tags configuration"
+        )
 
-        MessageFormat.send(sender, helpMessage)
+        val helpMessage = buildString {
+            append("&7LogicTags Help:\n")
+            commands.forEach { (permission, description) ->
+                if (permission == null || sender.hasPermission(permission)) {
+                    append("$description\n")
+                }
+            }
+        }
+
+        MessageFormat.send(sender, helpMessage.trim())
     }
 }

@@ -3,9 +3,12 @@ package de.frinshhd.logicTags
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import java.io.File
 
-class PlayerTagManager {
+class PlayerTagManager : Listener {
 
     private val playerTagsFile = File(Main.instance.dataFolder, "player_tags.yml")
     private val playerTagsConfig = YamlConfiguration()
@@ -45,7 +48,11 @@ class PlayerTagManager {
         }.toMap()
 
     fun getTagsMapPlayer(player: CommandSender): Map<String, TagDetails> =
-        getTagsMap().filter { (id, tag) -> tag.permission == null || tag.permission.isEmpty() || player.hasPermission(tag.permission) }
+        getTagsMap().filter { (id, tag) ->
+            tag.permission == null || tag.permission.isEmpty() || player.hasPermission(
+                tag.permission
+            )
+        }
 
     // Private helpers
     private fun setupFile(file: File, config: YamlConfiguration, copyFromResources: Boolean = false) {
@@ -78,6 +85,10 @@ class PlayerTagManager {
         tagsConfig.load(tagsFile)
         loadTags()
     }
+
+    @EventHandler
+    fun onPlayerJoin(event: PlayerJoinEvent) =
+        Main.tagsHandler.addPlayerTag(event.player, Main.playerTagManager.getTag(event.player))
 }
 
 data class TagDetails(

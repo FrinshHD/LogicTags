@@ -6,15 +6,16 @@
 
     <groupId>de.frinshhd</groupId>
     <artifactId>LogicTags</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0${BUILD_NUMBER}</version>
     <packaging>jar</packaging>
 
     <name>LogicTags</name>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <kotlin.version>2.2.0-Beta2</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <BUILD_NUMBER/>
     </properties>
 
     <build>
