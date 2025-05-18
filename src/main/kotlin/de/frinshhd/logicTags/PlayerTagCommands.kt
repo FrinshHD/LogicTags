@@ -3,6 +3,7 @@ package de.frinshhd.logicTags
 import de.frinshhd.logicTags.utils.MessageFormat
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.incendo.cloud.annotation.specifier.Greedy
 import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
@@ -73,13 +74,13 @@ class PlayerTagCommands {
 
     @Command("$COMMAND_PREFIX change <tag>")
     @Permission("${Main.PERMISSION_PREFIX}.change")
-    fun tagChange(sender: CommandSender, @Argument("tag") tag: String?) {
+    fun tagChange(sender: CommandSender, @Argument(value = "tag") @Greedy tag: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the tag: &d$tag")
+            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the tag: &r$tag")
             return
         }
 
-        if (tag == null) {
+        if (tag == null || tag.isBlank()) {
             MessageFormat.send(sender, "&cPlease provide a tag.")
             return
         }
@@ -118,7 +119,7 @@ class PlayerTagCommands {
         )
 
         val helpMessage = buildString {
-            append("&7LogicTags Help:\n")
+            append("&dLogicTags Help:\n&r")
             commands.forEach { (permission, description) ->
                 if (permission == null || sender.hasPermission(permission)) {
                     append("$description\n")
