@@ -12,11 +12,12 @@ LogicTags is a Minecraft plugin that allows users to configure and manage tags f
 - [Developement Builds](https://jenkins.codearray.dev/job/LogicTags/)
 
 ## Showcase
+![LogicTags Video Showcase](https://youtu.be/I0Kn1qKCPAc)
+
 ![](https://cdn.modrinth.com/data/KyEGDSv3/images/41f73cf8b39d34aeed5adb25a96393d76526ede9.png)
 ![](https://cdn.modrinth.com/data/KyEGDSv3/images/e123e9375b61905c3e86539a22a186b42985af1f.png)
 ![](https://cdn.modrinth.com/data/KyEGDSv3/images/e32311d25ec0966785683735a5004f36be5ad065.png)
 ![](https://cdn.modrinth.com/data/KyEGDSv3/images/e795b4a58f210631e32732d864dfa539a528b0c4.png)
-[![LogicTags Showcase](https://img.youtube.com/vi/I0Kn1qKCPAc/0.jpg)](https://youtu.be/I0Kn1qKCPAc)
 
 ## Commands
 
