@@ -43,12 +43,12 @@ class TagsHandler {
     fun spawnPlayers(player: Player, players: List<Player>) {
         println("Spawning players for: ${player.name}")
         players.forEach { otherPlayers ->
-                if (otherPlayers == player) return@forEach
+            if (otherPlayers == player) return@forEach
 
-                val tagData = tagsMap[otherPlayers] ?: return@forEach
+            val tagData = tagsMap[otherPlayers] ?: return@forEach
 
-                spawnTextDisplay(player, tagData.entityId, otherPlayers, tagData.text)
-            }
+            spawnTextDisplay(player, tagData.entityId, otherPlayers, tagData.text)
+        }
     }
 
     /**
@@ -64,24 +64,26 @@ class TagsHandler {
         val user: User = PacketEvents.getAPI().playerManager.getUser(player)
 
         if (playerToMount != player && Main.settingsManager.hasCustomTeams()) {
-            user.sendPacket(WrapperPlayServerTeams(
-                "customName${playerToMount.name}",
-                WrapperPlayServerTeams.TeamMode.CREATE,
-                WrapperPlayServerTeams.ScoreBoardTeamInfo(
-                    Component.text(""),
-                    Component.text(""),
-                    Component.text(""),
-                    WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
-                    WrapperPlayServerTeams.CollisionRule.ALWAYS,
-                    NamedTextColor.WHITE,
-                    WrapperPlayServerTeams.OptionData.NONE
-                ),
-                playerToMount.name
-            ))
+            user.sendPacket(
+                WrapperPlayServerTeams(
+                    "customName${playerToMount.name}",
+                    WrapperPlayServerTeams.TeamMode.CREATE,
+                    WrapperPlayServerTeams.ScoreBoardTeamInfo(
+                        Component.text(""),
+                        Component.text(""),
+                        Component.text(""),
+                        WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
+                        WrapperPlayServerTeams.CollisionRule.ALWAYS,
+                        NamedTextColor.WHITE,
+                        WrapperPlayServerTeams.OptionData.NONE
+                    ),
+                    playerToMount.name
+                )
+            )
         }
 
         val location = playerToMount.location.clone()
-        location.add(0.0,playerToMount.height,0.0)
+        location.add(0.0, playerToMount.height, 0.0)
 
         val spawnPacket = WrapperPlayServerSpawnEntity(
             id,
@@ -105,7 +107,13 @@ class TagsHandler {
         )
 
         if (text != null) {
-            entityData.add(EntityData(23, EntityDataTypes.ADV_COMPONENT, Component.text("${MessageFormat.build(text)}\n\n")))
+            entityData.add(
+                EntityData(
+                    23,
+                    EntityDataTypes.ADV_COMPONENT,
+                    Component.text("${MessageFormat.build(text)}\n\n")
+                )
+            )
         }
 
         // MetadataPacket
@@ -145,7 +153,10 @@ class TagsHandler {
     fun removePlayerTag(player: Player) {
         val tagData = tagsMap[player] ?: return
 
-        removePlayerTag(tagData)
+        removePlayerTag(tagData, true)
+
+        tagsMap[player]?.text = null
+        Main.playerTagManager.removeTag(player)
     }
 
     fun removePlayerTag(tagData: TagData, isPassive: Boolean = false) {
@@ -155,7 +166,7 @@ class TagsHandler {
     }
 }
 
-class TagsHandlerPacketListener: PacketListener {
+class TagsHandlerPacketListener : PacketListener {
 
     @Override
     override fun onPacketSend(event: PacketSendEvent) {
@@ -171,7 +182,10 @@ class TagsHandlerPacketListener: PacketListener {
                 if (spawnEntityPacket.entityType != EntityTypes.PLAYER) return
 
                 Bukkit.getScheduler().runTask(Main.instance, Runnable {
-                    Main.tagsHandler.spawnPlayers( event.getPlayer(), listOf(Bukkit.getPlayer(spawnEntityPacket.uuid.get()) ?: return@Runnable))
+                    Main.tagsHandler.spawnPlayers(
+                        event.getPlayer(),
+                        listOf(Bukkit.getPlayer(spawnEntityPacket.uuid.get()) ?: return@Runnable)
+                    )
                 })
             }
 
@@ -223,7 +237,7 @@ class TagsHandlerPacketListener: PacketListener {
     }
 }
 
-class TagsHandlerListener: Listener {
+class TagsHandlerListener : Listener {
 
     @EventHandler
     fun onPlayerQuit(event: org.bukkit.event.player.PlayerQuitEvent) {
