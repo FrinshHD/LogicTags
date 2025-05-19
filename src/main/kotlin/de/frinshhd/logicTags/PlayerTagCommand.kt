@@ -9,7 +9,7 @@ import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 
-class PlayerTagCommands {
+class PlayerTagCommand {
 
     companion object {
         const val COMMAND_PREFIX = "tag"

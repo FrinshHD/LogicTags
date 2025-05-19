@@ -57,7 +57,7 @@ class Main : JavaPlugin() {
 
         saveDefaultConfig()
 
-        instance.logger.level = Level.ALL
+        instance.logger.level = Level.SEVERE
 
 
         // Find plugin class names for dynamic loading
@@ -81,11 +81,8 @@ class Main : JavaPlugin() {
     private fun setupCommands() {
         commandManager = LegacyPaperCommandManager.createNative(instance, ExecutionCoordinator.simpleCoordinator())
 
-        /*if (commandManager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER))
-            commandManager.registerBrigadier()*/
-
         annotationParser = AnnotationParser(commandManager, CommandSender::class.java)
 
-        annotationParser.parse(PlayerTagCommands())
+        annotationParser.parse(PlayerTagCommand())
     }
 }
