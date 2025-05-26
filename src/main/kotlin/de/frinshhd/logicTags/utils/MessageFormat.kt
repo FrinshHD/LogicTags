@@ -1,5 +1,7 @@
 package de.frinshhd.logicTags.utils
 
+import de.frinshhd.logicTags.Main
+import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 import java.util.regex.Pattern
@@ -26,11 +28,10 @@ object MessageFormat {
     }
 
     fun send(sender: CommandSender, message: String) {
-        sender.sendMessage(build(message))
+        sender.sendMessage(Component.text(build(message)))
     }
 
-    fun sendNoPerm(sender: CommandSender) {
-        sender.sendMessage(build("&cYou don't have permission to do this!"))
-    }
+    fun sendNoPerm(sender: CommandSender) = Main.translationManager.send(sender, "noPermission")
+
 }
 

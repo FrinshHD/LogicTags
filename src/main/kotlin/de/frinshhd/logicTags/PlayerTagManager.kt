@@ -1,5 +1,6 @@
 package de.frinshhd.logicTags
 
+import de.frinshhd.logicTags.Main.Companion.translationManager
 import de.frinshhd.logicTags.utils.MessageFormat
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
@@ -97,7 +98,10 @@ class PlayerTagManager : Listener {
             val tag: String? = Main.playerTagManager.getTag(event.player)
 
             if (tag != null)
-                MessageFormat.send(player, "&7Your current tag is: &r$tag&7.")
+                MessageFormat.send(
+                    player,
+                    translationManager.get("tagInfoJoinMessage", Translatable("tag", tag))
+                )
 
         }
 

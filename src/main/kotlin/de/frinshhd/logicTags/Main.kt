@@ -33,6 +33,9 @@ class Main : JavaPlugin() {
 
         lateinit var settingsManager: SettingsManager
             private set
+
+        lateinit var translationManager: TranslationManager
+            private set
     }
 
     override fun onLoad() {
@@ -45,7 +48,7 @@ class Main : JavaPlugin() {
 
         setup()
 
-        println("LogicTags enabled!")
+        logger.info("LogicTags enabled!")
     }
 
     override fun onDisable() {
@@ -72,6 +75,8 @@ class Main : JavaPlugin() {
         DynamicListeners.load(classNames, canonicalName)
 
         settingsManager = SettingsManager()
+
+        translationManager = TranslationManager()
 
         tagsHandler = TagsHandler()
         playerTagManager = PlayerTagManager()

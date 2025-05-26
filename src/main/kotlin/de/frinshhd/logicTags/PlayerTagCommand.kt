@@ -20,17 +20,17 @@ class PlayerTagCommand {
     @CommandDescription("Command for LogicTags")
     fun tag(sender: CommandSender) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         val tag = Main.playerTagManager.getTag(sender)
         if (tag == null) {
-            MessageFormat.send(sender, "&cYou don't have a tag set.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.noTagSet"))
             return
         }
 
-        MessageFormat.send(sender, "&7Your current tag is &r$tag&7.")
+        MessageFormat.send(sender, Main.translationManager.get("tagCommand.currentTag", Translatable("tag", tag)))
     }
 
     @Command("$COMMAND_PREFIX list")
@@ -38,13 +38,20 @@ class PlayerTagCommand {
         val tagsMap = Main.playerTagManager.getTagsMapPlayer(sender)
 
         if (tagsMap.isEmpty()) {
-            MessageFormat.send(sender, "&cNo tags are available.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.noTagsAvailable"))
             return
         }
 
         val tagsMessage = tagsMap.entries
-            .joinToString(separator = "\n", prefix = "&7Available Tags:\n") { (id, tag) ->
-                "&7ID: &d$id &7- Name: &d${tag.name}"
+            .joinToString(
+                separator = "\n",
+                prefix = Main.translationManager.get("tagCommand.availableTags")
+            ) { (id, tag) ->
+                Main.translationManager.get(
+                    "tagCommand.tagDetails",
+                    Translatable("id", id),
+                    Translatable("name", tag.name)
+                )
             }
 
         MessageFormat.send(sender, tagsMessage)
@@ -53,60 +60,69 @@ class PlayerTagCommand {
     @Command("$COMMAND_PREFIX select <id>")
     fun tagSelect(sender: CommandSender, @Argument("id") id: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the id: &d$id")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         if (id == null) {
             val availableIds = Main.playerTagManager.getTagsMap().keys.joinToString(", ")
-            MessageFormat.send(sender, "&cPlease provide a tag ID. Available IDs: &d$availableIds")
+            MessageFormat.send(
+                sender,
+                Main.translationManager.get("tagCommand.provideTagId", Translatable("availableIds", availableIds))
+            )
             return
         }
 
         val tagDetails = Main.playerTagManager.getTagsMapPlayer(sender)[id]
         if (tagDetails == null) {
-            MessageFormat.send(sender, "&cInvalid tag ID. Use one of the available IDs.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.invalidTagId"))
             return
         }
 
         Main.tagsHandler.updateText(sender, tagDetails.name)
-        MessageFormat.send(sender, "&7Tag changed to &d${tagDetails.name}&7.")
+        MessageFormat.send(
+            sender,
+            Main.translationManager.get("tagCommand.tagChanged", Translatable("tag", tagDetails.name))
+        )
     }
 
     @Command("$COMMAND_PREFIX change <tag>")
     @Permission("${Main.PERMISSION_PREFIX}.change")
     fun tagChange(sender: CommandSender, @Argument(value = "tag") @Greedy tag: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players. But you entered the tag: &r$tag")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         if (tag == null || tag.isBlank()) {
-            MessageFormat.send(sender, "&cPlease provide a tag.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.provideTag"))
             return
         }
 
         if (Main.settingsManager.getMaxTagLength() > 0 && tag.length > Main.settingsManager.getMaxTagLength()) {
             MessageFormat.send(
                 sender,
-                "&cTag is too long. Maximum length is ${Main.settingsManager.getMaxTagLength()} characters."
+                Main.translationManager.get(
+                    "tagCommand.tagTooLong",
+                    Translatable("maxLength", Main.settingsManager.getMaxTagLength().toString())
+                )
             )
             return
         }
 
         Main.tagsHandler.updateText(sender, tag)
-        MessageFormat.send(sender, "&7Tag changed to &d$tag&7.")
+        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagChanged", Translatable("tag", tag)))
     }
 
     @Command("$COMMAND_PREFIX remove")
     fun tagRemove(sender: CommandSender) {
         if (sender !is Player) {
-            MessageFormat.send(sender, "&cThis command can only be used by players.")
+            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         Main.tagsHandler.removePlayerTag(sender)
-        MessageFormat.send(sender, "&7Tag removed.")
+        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagRemoved"))
     }
 
     @Command("$COMMAND_PREFIX reload")
@@ -114,22 +130,47 @@ class PlayerTagCommand {
     fun tagReload(sender: CommandSender) {
         Main.playerTagManager.reloadTags()
         Main.settingsManager.reloadSettings()
-        MessageFormat.send(sender, "&7Tags reloaded.")
+        Main.translationManager.reload()
+        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagsReloaded"))
     }
 
     @Command("$COMMAND_PREFIX help")
     fun tagHelp(sender: CommandSender) {
         val commands = listOf(
-            null to "&7/tag &7- View your current tag",
-            null to "&7/tag list &7- List all available tags",
-            null to "&7/tag select <id> &7- Select a tag by ID",
-            "${Main.PERMISSION_PREFIX}.change" to "&7/tag change <tag> &7- Change your tag to the specified text",
-            null to "&7/tag remove &7- Remove your current tag",
-            "${Main.PERMISSION_PREFIX}.reload" to "&7/tag reload &7- Reload the tags configuration"
+            null to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.tag"))
+            ),
+            null to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag list"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.list"))
+            ),
+            null to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag select <id>"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.select"))
+            ),
+            "${Main.PERMISSION_PREFIX}.change" to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag change <tag>"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.change"))
+            ),
+            null to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag remove"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.remove"))
+            ),
+            "${Main.PERMISSION_PREFIX}.reload" to Main.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag reload"),
+                Translatable("description", Main.translationManager.get("tagCommand.descriptions.reload"))
+            )
         )
 
         val helpMessage = buildString {
-            append("&dLogicTags Help:\n&r")
+            append(Main.translationManager.get("tagCommand.helpHeader"))
             commands.forEach { (permission, description) ->
                 if (permission == null || sender.hasPermission(permission)) {
                     append("$description\n")

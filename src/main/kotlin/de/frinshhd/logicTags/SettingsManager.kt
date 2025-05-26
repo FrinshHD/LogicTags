@@ -13,6 +13,7 @@ class SettingsManager {
         "seeOwnTag" to false,
         "maxTagLength" to 20,
         "tagInfoJoinMessage" to false,
+        "language" to "en",
     )
 
     init {
@@ -68,7 +69,7 @@ class SettingsManager {
     fun isSeeOwnTag(): Boolean = getSetting("seeOwnTag", Boolean::class.java)
     fun getMaxTagLength(): Int = getSetting("maxTagLength", Int::class.java)
     fun isTagInfoJoinMessage(): Boolean = getSetting("tagInfoJoinMessage", Boolean::class.java)
-
+    fun getLanguage(): String = getSetting("language", String::class.java)
     private fun setupFile() {
         if (!configFile.exists()) {
             configFile.parentFile.mkdirs()
