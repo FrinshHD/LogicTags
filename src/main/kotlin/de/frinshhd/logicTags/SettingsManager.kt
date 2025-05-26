@@ -12,6 +12,7 @@ class SettingsManager {
         "customTeams" to true,
         "seeOwnTag" to false,
         "maxTagLength" to 20,
+        "tagInfoJoinMessage" to false,
     )
 
     init {
@@ -49,7 +50,7 @@ class SettingsManager {
     // Helper extension for safe constructor access
     private fun <T> Class<T>.getDeclaredConstructorOrNull() = try {
         getDeclaredConstructor()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
@@ -66,6 +67,7 @@ class SettingsManager {
 
     fun isSeeOwnTag(): Boolean = getSetting("seeOwnTag", Boolean::class.java)
     fun getMaxTagLength(): Int = getSetting("maxTagLength", Int::class.java)
+    fun isTagInfoJoinMessage(): Boolean = getSetting("tagInfoJoinMessage", Boolean::class.java)
 
     private fun setupFile() {
         if (!configFile.exists()) {

@@ -1,5 +1,6 @@
 package de.frinshhd.logicTags
 
+import de.frinshhd.logicTags.utils.MessageFormat
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -48,8 +49,8 @@ class PlayerTagManager : Listener {
         }.toMap()
 
     fun getTagsMapPlayer(player: CommandSender): Map<String, TagDetails> =
-        getTagsMap().filter { (id, tag) ->
-            tag.permission == null || tag.permission.isEmpty() || player.hasPermission(
+        getTagsMap().filter { (_, tag) ->
+            tag.permission.isEmpty() || player.hasPermission(
                 tag.permission
             )
         }
@@ -88,7 +89,17 @@ class PlayerTagManager : Listener {
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        Main.tagsHandler.addPlayerTag(event.player, Main.playerTagManager.getTag(event.player))
+        val player = event.player
+
+        Main.tagsHandler.addPlayerTag(player, Main.playerTagManager.getTag(player))
+
+        if (Main.settingsManager.isTagInfoJoinMessage()) {
+            val tag: String? = Main.playerTagManager.getTag(event.player)
+
+            if (tag != null)
+                MessageFormat.send(player, "&7Your current tag is: &r$tag&7.")
+
+        }
 
         if (Main.settingsManager.isSeeOwnTag())
             Main.tagsHandler.spawnPlayers(event.player, listOf(event.player))
