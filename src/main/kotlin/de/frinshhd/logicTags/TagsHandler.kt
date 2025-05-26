@@ -41,9 +41,8 @@ class TagsHandler {
     }
 
     fun spawnPlayers(player: Player, players: List<Player>) {
-        println("Spawning players for: ${player.name}")
         players.forEach { otherPlayers ->
-            if (otherPlayers == player) return@forEach
+            if (otherPlayers == player && !Main.settingsManager.isSeeOwnTag()) return@forEach
 
             val tagData = tagsMap[otherPlayers] ?: return@forEach
 
@@ -59,8 +58,6 @@ class TagsHandler {
      * @param playerToMount The player to mount the text display entity on.
      */
     fun spawnTextDisplay(player: Player, id: Int, playerToMount: Player, text: String?) {
-        println("Spawning text display for player: ${player.name} mounted on player $playerToMount with ID: $id")
-
         val user: User = PacketEvents.getAPI().playerManager.getUser(player)
 
         if (playerToMount != player && Main.settingsManager.hasCustomTeams()) {

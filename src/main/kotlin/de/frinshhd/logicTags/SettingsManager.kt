@@ -19,17 +19,38 @@ class SettingsManager {
     }
 
     fun <T : Any> getSetting(key: String, clazz: Class<T>): T {
-        val value = config.get(key, defaultSettings[key])
+        val value = config.get(key)
         val default = defaultSettings[key]
 
+        @Suppress("UNCHECKED_CAST")
         return when {
+            clazz == Boolean::class.java -> when (value) {
+                is Boolean -> value as T
+                is String -> value.toBoolean() as T
+                is Number -> (value.toInt() != 0) as T
+                else -> (default as? Boolean ?: false) as T
+            }
+
+            clazz == Int::class.java -> when (value) {
+                is Int -> value as T
+                is Number -> value.toInt() as T
+                is String -> value.toIntOrNull() as? T ?: (default as? Int ?: 0) as T
+                else -> (default as? Int ?: 0) as T
+            }
+
+            clazz == String::class.java -> value?.toString() as T? ?: (default as? String ?: "") as T
             clazz.isInstance(value) -> clazz.cast(value)
             clazz.isInstance(default) -> clazz.cast(default)
-            clazz == Boolean::class.java -> false as T
-            clazz == Int::class.java -> 0 as T
-            clazz == String::class.java -> "" as T
-            else -> throw IllegalStateException("Unsupported type for key: $key")
+            else -> clazz.getDeclaredConstructorOrNull()?.newInstance()
+                ?: error("Cannot provide default for type: ${clazz.name}")
         }
+    }
+
+    // Helper extension for safe constructor access
+    private fun <T> Class<T>.getDeclaredConstructorOrNull() = try {
+        getDeclaredConstructor()
+    } catch (e: Exception) {
+        null
     }
 
     fun setSetting(key: String, value: Any?) {

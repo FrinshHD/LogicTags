@@ -87,8 +87,13 @@ class PlayerTagManager : Listener {
     }
 
     @EventHandler
-    fun onPlayerJoin(event: PlayerJoinEvent) =
+    fun onPlayerJoin(event: PlayerJoinEvent) {
         Main.tagsHandler.addPlayerTag(event.player, Main.playerTagManager.getTag(event.player))
+
+        if (Main.settingsManager.isSeeOwnTag())
+            Main.tagsHandler.spawnPlayers(event.player, listOf(event.player))
+    }
+
 }
 
 data class TagDetails(

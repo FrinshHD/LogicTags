@@ -113,6 +113,7 @@ class PlayerTagCommand {
     @Permission("${Main.PERMISSION_PREFIX}.reload")
     fun tagReload(sender: CommandSender) {
         Main.playerTagManager.reloadTags()
+        Main.settingsManager.reloadSettings()
         MessageFormat.send(sender, "&7Tags reloaded.")
     }
 
