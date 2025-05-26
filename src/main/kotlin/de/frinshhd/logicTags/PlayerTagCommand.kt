@@ -9,13 +9,14 @@ import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 
+@Suppress("unused")
 class PlayerTagCommand {
 
     companion object {
         const val COMMAND_PREFIX = "tag"
     }
 
-    @Command("$COMMAND_PREFIX")
+    @Command(COMMAND_PREFIX)
     @CommandDescription("Command for LogicTags")
     fun tag(sender: CommandSender) {
         if (sender !is Player) {
@@ -82,6 +83,14 @@ class PlayerTagCommand {
 
         if (tag == null || tag.isBlank()) {
             MessageFormat.send(sender, "&cPlease provide a tag.")
+            return
+        }
+
+        if (Main.settingsManager.getMaxTagLength() > 0 && tag.length > Main.settingsManager.getMaxTagLength()) {
+            MessageFormat.send(
+                sender,
+                "&cTag is too long. Maximum length is ${Main.settingsManager.getMaxTagLength()} characters."
+            )
             return
         }
 
