@@ -2,11 +2,13 @@ package de.frinshhd.logicTags
 
 import com.github.retrooper.packetevents.PacketEvents
 import de.frinshhd.logicTags.utils.DynamicListeners
+import de.frinshhd.logicTags.utils.MessageFormat
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
+import org.incendo.cloud.exception.NoPermissionException
 import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.LegacyPaperCommandManager
 import org.reflections.Reflections
@@ -84,5 +86,9 @@ class Main : JavaPlugin() {
         annotationParser = AnnotationParser(commandManager, CommandSender::class.java)
 
         annotationParser.parse(PlayerTagCommand())
+
+        commandManager.exceptionController().registerHandler(NoPermissionException::class.java) { exception ->
+            MessageFormat.sendNoPerm(exception.context().sender())
+        }
     }
 }
