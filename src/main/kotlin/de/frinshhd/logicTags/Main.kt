@@ -3,6 +3,7 @@ package de.frinshhd.logicTags
 import com.github.retrooper.packetevents.PacketEvents
 import de.frinshhd.logicTags.utils.DynamicListeners
 import de.frinshhd.logicTags.utils.MessageFormat
+import de.frinshhd.logicTags.utils.Metrics
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
@@ -13,6 +14,7 @@ import org.incendo.cloud.execution.ExecutionCoordinator
 import org.incendo.cloud.paper.LegacyPaperCommandManager
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
+import org.reflections.util.ConfigurationBuilder
 import java.util.logging.Level
 
 
@@ -40,6 +42,7 @@ class Main : JavaPlugin() {
 
     override fun onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
+        PacketEvents.getAPI().settings.checkForUpdates(false)
         PacketEvents.getAPI().load()
     }
 
@@ -52,7 +55,8 @@ class Main : JavaPlugin() {
     }
 
     override fun onDisable() {
-        Bukkit.getOnlinePlayers().forEach { player -> player.kickPlayer("Server reloading, please rejoin!") }
+        if (!Bukkit.getServer().isStopping)
+            Bukkit.getOnlinePlayers().forEach { player -> player.kickPlayer("Server reloading, please rejoin!") }
 
         PacketEvents.getAPI().terminate()
     }
@@ -64,12 +68,11 @@ class Main : JavaPlugin() {
 
         instance.logger.level = Level.SEVERE
 
-
         // Find plugin class names for dynamic loading
         val fullCanonicalName = instance.javaClass.canonicalName
         val canonicalName = fullCanonicalName.substring(0, fullCanonicalName.lastIndexOf("."))
 
-        val reflections = Reflections(canonicalName, Scanners.SubTypes)
+        val reflections = Reflections(ConfigurationBuilder().forPackage(canonicalName).setScanners(Scanners.SubTypes))
         val classNames = reflections.getAll(Scanners.SubTypes)
 
         DynamicListeners.load(classNames, canonicalName)
@@ -82,6 +85,8 @@ class Main : JavaPlugin() {
         playerTagManager = PlayerTagManager()
 
         setupCommands()
+
+        Metrics(this, 25996)
     }
 
 
