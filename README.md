@@ -8,7 +8,7 @@ LogicTags is a Minecraft plugin that allows users to configure and manage tags f
 
 - [Discord](https://codearray.dev/discord)
 - [Wiki](https://codearray.dev/docs/logictags) (coming soon)
-- [Modrinth (Download)](https://modrinth.com/plugins/logictags)
+- [Modrinth (Download)](https://modrinth.com/plugin/logictags)
 - [Developement Builds](https://jenkins.codearray.dev/job/LogicTags/)
 
 ## Showcase
