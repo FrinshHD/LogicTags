@@ -25,6 +25,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 
 class TagsHandler {
@@ -98,9 +99,9 @@ class TagsHandler {
         user.sendPacket(spawnPacket)
 
         // MetadataPacket
-        val entityData = mutableListOf<EntityData<*>>(
+        val entityData: MutableList<EntityData> = mutableListOf(
             EntityData(15, EntityDataTypes.BYTE, 1.toByte()),
-            EntityData(25, EntityDataTypes.INT, 0),
+            EntityData(25, EntityDataTypes.INT, 0)
         )
 
         if (text != null) {
@@ -237,7 +238,7 @@ class TagsHandlerPacketListener : PacketListener {
 class TagsHandlerListener : Listener {
 
     @EventHandler
-    fun onPlayerQuit(event: org.bukkit.event.player.PlayerQuitEvent) {
+    fun onPlayerQuit(event: PlayerQuitEvent) {
         val player: Player = event.getPlayer()
 
         val tagData = Main.tagsHandler.tagsMap[player] ?: return
