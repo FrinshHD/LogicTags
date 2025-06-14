@@ -5,6 +5,9 @@ import de.frinshhd.logicTags.utils.DynamicListeners
 import de.frinshhd.logicTags.utils.MessageFormat
 import de.frinshhd.logicTags.utils.Metrics
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
+import me.tofaa.entitylib.APIConfig
+import me.tofaa.entitylib.EntityLib
+import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
@@ -16,7 +19,6 @@ import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 import java.util.logging.Level
-
 
 class Main : JavaPlugin() {
 
@@ -63,6 +65,14 @@ class Main : JavaPlugin() {
 
     private fun setup() {
         PacketEvents.getAPI().init()
+
+        val platform = SpigotEntityLibPlatform(this)
+        val settings: APIConfig? = APIConfig(PacketEvents.getAPI())
+            .debugMode()
+            .tickTickables()
+            .usePlatformLogger()
+
+        EntityLib.init(platform, settings)
 
         saveDefaultConfig()
 

@@ -2,21 +2,24 @@ package de.frinshhd.logicTags
 
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListener
-import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.event.PacketSendEvent
-import com.github.retrooper.packetevents.protocol.entity.data.EntityData
-import com.github.retrooper.packetevents.protocol.entity.data.EntityDataTypes
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
 import com.github.retrooper.packetevents.protocol.packettype.PacketType
 import com.github.retrooper.packetevents.protocol.player.User
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientEntityAction
-import com.github.retrooper.packetevents.wrapper.play.server.*
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerDestroyEntities
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPassengers
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSpawnEntity
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTeams
 import de.frinshhd.logicTags.utils.MessageFormat
 import de.frinshhd.logicTags.utils.PlayerHashMap
 import de.frinshhd.logicTags.utils.PlayerHashSet
 import io.github.retrooper.packetevents.util.SpigotConversionUtil
 import io.github.retrooper.packetevents.util.SpigotReflectionUtil
+import me.tofaa.entitylib.meta.display.AbstractDisplayMeta
+import me.tofaa.entitylib.meta.display.TextDisplayMeta
+import me.tofaa.entitylib.wrapper.WrapperEntity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
@@ -26,14 +29,13 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
-import java.util.*
 
 class TagsHandler {
 
     val tagsMap: PlayerHashMap<Player, TagData> = PlayerHashMap()
 
     init {
-        PacketEvents.getAPI().eventManager.registerListener(TagsHandlerPacketListener(), PacketListenerPriority.NORMAL)
+        //PacketEvents.getAPI().eventManager.registerListener(TagsHandlerPacketListener(), PacketListenerPriority.NORMAL)
     }
 
     fun addPlayerTag(player: Player, text: String?) {
@@ -83,40 +85,25 @@ class TagsHandler {
         val location = playerToMount.location.clone()
         location.add(0.0, playerToMount.height, 0.0)
 
-        val spawnPacket = WrapperPlayServerSpawnEntity(
-            id,
-            UUID.randomUUID(),
-            EntityTypes.TEXT_DISPLAY,
-            SpigotConversionUtil.fromBukkitLocation(location).apply {
-                pitch = 0F
-                yaw = 0F
-            },
-            0F,
-            0,
-            null
-        )
+        val holo = WrapperEntity(id, EntityTypes.TEXT_DISPLAY)
 
-        user.sendPacket(spawnPacket)
+        val holoMeta = holo.entityMeta as TextDisplayMeta
 
-        // MetadataPacket
-        val entityData: MutableList<EntityData> = mutableListOf(
-            EntityData(15, EntityDataTypes.BYTE, 1.toByte()),
-            EntityData(25, EntityDataTypes.INT, 0)
-        )
+        if (text != null) holoMeta.text = Component.text("${MessageFormat.build(text)}\n\n")
 
-        if (text != null) {
-            entityData.add(
-                EntityData(
-                    23,
-                    EntityDataTypes.ADV_COMPONENT,
-                    Component.text("${MessageFormat.build(text)}\n\n")
-                )
-            )
+        holoMeta.apply {
+            isShadow = false
+            billboardConstraints = AbstractDisplayMeta.BillboardConstraints.VERTICAL
+            backgroundColor = 0
         }
 
-        // MetadataPacket
-        val metadataPacket = WrapperPlayServerEntityMetadata(id, entityData)
-        user.sendPacket(metadataPacket)
+
+        holo.spawn(SpigotConversionUtil.fromBukkitLocation(location).apply {
+            pitch = 0F
+            yaw = 0F
+        })
+
+        holo.addViewer(user)
 
         // MountPacket
         val mountPacket = WrapperPlayServerSetPassengers(playerToMount.entityId, intArrayOf(id))
