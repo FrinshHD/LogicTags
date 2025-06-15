@@ -2,6 +2,7 @@ package de.frinshhd.logicTags
 
 import com.github.retrooper.packetevents.PacketEvents
 import com.github.retrooper.packetevents.event.PacketListener
+import com.github.retrooper.packetevents.event.PacketListenerPriority
 import com.github.retrooper.packetevents.event.PacketReceiveEvent
 import com.github.retrooper.packetevents.event.PacketSendEvent
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes
@@ -35,7 +36,7 @@ class TagsHandler {
     val tagsMap: PlayerHashMap<Player, TagData> = PlayerHashMap()
 
     init {
-        //PacketEvents.getAPI().eventManager.registerListener(TagsHandlerPacketListener(), PacketListenerPriority.NORMAL)
+        PacketEvents.getAPI().eventManager.registerListener(TagsHandlerPacketListener(), PacketListenerPriority.NORMAL)
     }
 
     fun addPlayerTag(player: Player, text: String?) {
