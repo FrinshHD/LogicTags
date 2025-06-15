@@ -2,6 +2,7 @@ package de.frinshhd.logicTags
 
 import com.github.retrooper.packetevents.PacketEvents
 import de.frinshhd.logicTags.api.LogicTagsAPI
+import de.frinshhd.logicTags.api.LogicTagsAPIImpl
 import de.frinshhd.logicTags.utils.DynamicListeners
 import de.frinshhd.logicTags.utils.MessageFormat
 import de.frinshhd.logicTags.utils.Metrics
