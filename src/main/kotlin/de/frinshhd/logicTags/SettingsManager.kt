@@ -9,7 +9,7 @@ class SettingsManager {
     private val config = YamlConfiguration()
 
     private val defaultSettings = mapOf(
-        "customTeams" to true,
+        "customTeams" to false,
         "seeOwnTag" to false,
         "maxTagLength" to 20,
         "tagInfoJoinMessage" to false,
