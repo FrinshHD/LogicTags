@@ -1,6 +1,6 @@
 package de.frinshhd.logicTags.utils
 
-import de.frinshhd.logicTags.Main
+import de.frinshhd.logicTags.LogicTags
 import org.bukkit.Bukkit
 import java.lang.reflect.InvocationTargetException
 
@@ -18,20 +18,20 @@ object DynamicListeners {
                         val constructor = cls.getConstructors()[0]
                         val listener = constructor.newInstance() as org.bukkit.event.Listener
 
-                        Bukkit.getServer().getPluginManager().registerEvents(listener, Main.instance)
+                        Bukkit.getServer().getPluginManager().registerEvents(listener, LogicTags.instance)
                     }
                 } catch (e: ClassNotFoundException) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 } catch (e: IllegalAccessException) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 } catch (e: InstantiationException) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 } catch (e: InvocationTargetException) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 } catch (e: IllegalArgumentException) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 } catch (e: NoClassDefFoundError) {
-                    Main.instance.logger.warning("Error loading listeners in class " + className + " " + e)
+                    LogicTags.instance.logger.warning("Error loading listeners in class " + className + " " + e)
                 }
             }
         }

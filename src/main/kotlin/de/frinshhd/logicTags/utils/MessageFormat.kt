@@ -1,6 +1,6 @@
 package de.frinshhd.logicTags.utils
 
-import de.frinshhd.logicTags.Main
+import de.frinshhd.logicTags.LogicTags
 import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
@@ -31,7 +31,7 @@ object MessageFormat {
         sender.sendMessage(Component.text(build(message)))
     }
 
-    fun sendNoPerm(sender: CommandSender) = Main.translationManager.send(sender, "noPermission")
+    fun sendNoPerm(sender: CommandSender) = LogicTags.translationManager.send(sender, "noPermission")
 
 }
 

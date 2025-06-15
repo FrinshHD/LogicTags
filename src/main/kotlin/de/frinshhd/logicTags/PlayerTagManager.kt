@@ -1,6 +1,6 @@
 package de.frinshhd.logicTags
 
-import de.frinshhd.logicTags.Main.Companion.translationManager
+import de.frinshhd.logicTags.LogicTags.Companion.translationManager
 import de.frinshhd.logicTags.utils.MessageFormat
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
@@ -12,10 +12,10 @@ import java.io.File
 
 class PlayerTagManager : Listener {
 
-    private val playerTagsFile = File(Main.instance.dataFolder, "player_tags.yml")
+    private val playerTagsFile = File(LogicTags.instance.dataFolder, "player_tags.yml")
     private val playerTagsConfig = YamlConfiguration()
 
-    private val tagsFile = File(Main.instance.dataFolder, "tags.yml")
+    private val tagsFile = File(LogicTags.instance.dataFolder, "tags.yml")
     private val tagsConfig = YamlConfiguration()
 
     private val availableTags = mutableListOf<Map<String, String>>()
@@ -61,7 +61,7 @@ class PlayerTagManager : Listener {
         if (!file.exists()) {
             file.parentFile.mkdirs()
             if (copyFromResources) {
-                Main.instance.getResource(file.name)?.use { inputStream ->
+                LogicTags.instance.getResource(file.name)?.use { inputStream ->
                     file.outputStream().use { outputStream ->
                         inputStream.copyTo(outputStream)
                     }
@@ -92,10 +92,10 @@ class PlayerTagManager : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-        Main.tagsHandler.addPlayerTag(player, Main.playerTagManager.getTag(player))
+        LogicTags.tagsHandler.addPlayerTag(player, LogicTags.playerTagManager.getTag(player))
 
-        if (Main.settingsManager.isTagInfoJoinMessage()) {
-            val tag: String? = Main.playerTagManager.getTag(event.player)
+        if (LogicTags.settingsManager.isTagInfoJoinMessage()) {
+            val tag: String? = LogicTags.playerTagManager.getTag(event.player)
 
             if (tag != null)
                 MessageFormat.send(
@@ -105,8 +105,8 @@ class PlayerTagManager : Listener {
 
         }
 
-        if (Main.settingsManager.isSeeOwnTag())
-            Main.tagsHandler.spawnPlayers(event.player, listOf(event.player))
+        if (LogicTags.settingsManager.isSeeOwnTag())
+            LogicTags.tagsHandler.spawnPlayers(event.player, listOf(event.player))
     }
 
 }

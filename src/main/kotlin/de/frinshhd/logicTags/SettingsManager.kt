@@ -5,7 +5,7 @@ import java.io.File
 
 class SettingsManager {
 
-    private val configFile = File(Main.instance.dataFolder, "config.yml")
+    private val configFile = File(LogicTags.instance.dataFolder, "config.yml")
     private val config = YamlConfiguration()
 
     private val defaultSettings = mapOf(

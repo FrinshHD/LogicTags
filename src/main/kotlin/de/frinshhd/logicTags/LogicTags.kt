@@ -1,6 +1,7 @@
 package de.frinshhd.logicTags
 
 import com.github.retrooper.packetevents.PacketEvents
+import de.frinshhd.logicTags.api.LogicTagsAPI
 import de.frinshhd.logicTags.utils.DynamicListeners
 import de.frinshhd.logicTags.utils.MessageFormat
 import de.frinshhd.logicTags.utils.Metrics
@@ -20,7 +21,7 @@ import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
 import java.util.logging.Level
 
-class Main : JavaPlugin() {
+class LogicTags : JavaPlugin() {
 
     private lateinit var commandManager: LegacyPaperCommandManager<CommandSender>
     private lateinit var annotationParser: AnnotationParser<CommandSender>
@@ -28,7 +29,7 @@ class Main : JavaPlugin() {
     companion object {
         const val PERMISSION_PREFIX = "logictags"
 
-        lateinit var instance: Main
+        lateinit var instance: LogicTags
             private set
         lateinit var tagsHandler: TagsHandler
             private set
@@ -40,12 +41,19 @@ class Main : JavaPlugin() {
 
         lateinit var translationManager: TranslationManager
             private set
+
+        @JvmStatic
+        lateinit var api: LogicTagsAPI
+            private set
     }
 
     override fun onLoad() {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
         PacketEvents.getAPI().settings.checkForUpdates(false)
         PacketEvents.getAPI().load()
+
+        api = LogicTagsAPIImpl(this)
+        server.servicesManager.register(LogicTagsAPI::class.java, api, this, org.bukkit.plugin.ServicePriority.Normal)
     }
 
     override fun onEnable() {

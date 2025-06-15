@@ -20,34 +20,34 @@ class PlayerTagCommand {
     @CommandDescription("Command for LogicTags")
     fun tag(sender: CommandSender) {
         if (sender !is Player) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
-        val tag = Main.playerTagManager.getTag(sender)
+        val tag = LogicTags.playerTagManager.getTag(sender)
         if (tag == null) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.noTagSet"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.noTagSet"))
             return
         }
 
-        MessageFormat.send(sender, Main.translationManager.get("tagCommand.currentTag", Translatable("tag", tag)))
+        MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.currentTag", Translatable("tag", tag)))
     }
 
     @Command("$COMMAND_PREFIX list")
     fun tagList(sender: CommandSender) {
-        val tagsMap = Main.playerTagManager.getTagsMapPlayer(sender)
+        val tagsMap = LogicTags.playerTagManager.getTagsMapPlayer(sender)
 
         if (tagsMap.isEmpty()) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.noTagsAvailable"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.noTagsAvailable"))
             return
         }
 
         val tagsMessage = tagsMap.entries
             .joinToString(
                 separator = "\n",
-                prefix = Main.translationManager.get("tagCommand.availableTags")
+                prefix = LogicTags.translationManager.get("tagCommand.availableTags")
             ) { (id, tag) ->
-                Main.translationManager.get(
+                LogicTags.translationManager.get(
                     "tagCommand.tagDetails",
                     Translatable("id", id),
                     Translatable("name", tag.name)
@@ -60,117 +60,117 @@ class PlayerTagCommand {
     @Command("$COMMAND_PREFIX select <id>")
     fun tagSelect(sender: CommandSender, @Argument("id") id: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         if (id == null) {
-            val availableIds = Main.playerTagManager.getTagsMap().keys.joinToString(", ")
+            val availableIds = LogicTags.playerTagManager.getTagsMap().keys.joinToString(", ")
             MessageFormat.send(
                 sender,
-                Main.translationManager.get("tagCommand.provideTagId", Translatable("availableIds", availableIds))
+                LogicTags.translationManager.get("tagCommand.provideTagId", Translatable("availableIds", availableIds))
             )
             return
         }
 
-        val tagDetails = Main.playerTagManager.getTagsMapPlayer(sender)[id]
+        val tagDetails = LogicTags.playerTagManager.getTagsMapPlayer(sender)[id]
         if (tagDetails == null) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.invalidTagId"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.invalidTagId"))
             return
         }
 
-        Main.tagsHandler.updateText(sender, tagDetails.name)
+        LogicTags.tagsHandler.updateText(sender, tagDetails.name)
         MessageFormat.send(
             sender,
-            Main.translationManager.get("tagCommand.tagChanged", Translatable("tag", tagDetails.name))
+            LogicTags.translationManager.get("tagCommand.tagChanged", Translatable("tag", tagDetails.name))
         )
     }
 
     @Command("$COMMAND_PREFIX change <tag>")
-    @Permission("${Main.PERMISSION_PREFIX}.change")
+    @Permission("${LogicTags.PERMISSION_PREFIX}.change")
     fun tagChange(sender: CommandSender, @Argument(value = "tag") @Greedy tag: String?) {
         if (sender !is Player) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
         if (tag == null || tag.isBlank()) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.provideTag"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.provideTag"))
             return
         }
 
-        if (Main.settingsManager.getMaxTagLength() > 0 && tag.length > Main.settingsManager.getMaxTagLength()) {
+        if (LogicTags.settingsManager.getMaxTagLength() > 0 && tag.length > LogicTags.settingsManager.getMaxTagLength()) {
             MessageFormat.send(
                 sender,
-                Main.translationManager.get(
+                LogicTags.translationManager.get(
                     "tagCommand.tagTooLong",
-                    Translatable("maxLength", Main.settingsManager.getMaxTagLength().toString())
+                    Translatable("maxLength", LogicTags.settingsManager.getMaxTagLength().toString())
                 )
             )
             return
         }
 
-        Main.tagsHandler.updateText(sender, tag)
-        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagChanged", Translatable("tag", tag)))
+        LogicTags.tagsHandler.updateText(sender, tag)
+        MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.tagChanged", Translatable("tag", tag)))
     }
 
     @Command("$COMMAND_PREFIX remove")
     fun tagRemove(sender: CommandSender) {
         if (sender !is Player) {
-            MessageFormat.send(sender, Main.translationManager.get("tagCommand.onlyPlayers"))
+            MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.onlyPlayers"))
             return
         }
 
-        Main.tagsHandler.removePlayerTag(sender)
-        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagRemoved"))
+        LogicTags.tagsHandler.removePlayerTag(sender)
+        MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.tagRemoved"))
     }
 
     @Command("$COMMAND_PREFIX reload")
-    @Permission("${Main.PERMISSION_PREFIX}.reload")
+    @Permission("${LogicTags.PERMISSION_PREFIX}.reload")
     fun tagReload(sender: CommandSender) {
-        Main.playerTagManager.reloadTags()
-        Main.settingsManager.reloadSettings()
-        Main.translationManager.reload()
-        MessageFormat.send(sender, Main.translationManager.get("tagCommand.tagsReloaded"))
+        LogicTags.playerTagManager.reloadTags()
+        LogicTags.settingsManager.reloadSettings()
+        LogicTags.translationManager.reload()
+        MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.tagsReloaded"))
     }
 
     @Command("$COMMAND_PREFIX help")
     fun tagHelp(sender: CommandSender) {
         val commands = listOf(
-            null to Main.translationManager.get(
+            null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.tag"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.tag"))
             ),
-            null to Main.translationManager.get(
+            null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag list"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.list"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.list"))
             ),
-            null to Main.translationManager.get(
+            null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag select <id>"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.select"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.select"))
             ),
-            "${Main.PERMISSION_PREFIX}.change" to Main.translationManager.get(
+            "${LogicTags.PERMISSION_PREFIX}.change" to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag change <tag>"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.change"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.change"))
             ),
-            null to Main.translationManager.get(
+            null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag remove"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.remove"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.remove"))
             ),
-            "${Main.PERMISSION_PREFIX}.reload" to Main.translationManager.get(
+            "${LogicTags.PERMISSION_PREFIX}.reload" to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag reload"),
-                Translatable("description", Main.translationManager.get("tagCommand.descriptions.reload"))
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.reload"))
             )
         )
 
         val helpMessage = buildString {
-            append(Main.translationManager.get("tagCommand.helpHeader"))
+            append(LogicTags.translationManager.get("tagCommand.helpHeader"))
             commands.forEach { (permission, description) ->
                 if (permission == null || sender.hasPermission(permission)) {
                     append("$description\n")

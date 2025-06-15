@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 class TranslationManager(
-    private val languagesDir: File = File(Main.instance.dataFolder, "languages"),
+    private val languagesDir: File = File(LogicTags.instance.dataFolder, "languages"),
     private val defaultLang: String = "en"
 ) {
     private val translations = mutableMapOf<String, Map<String, String>>()
@@ -16,14 +16,14 @@ class TranslationManager(
         ensureDefaultLanguageFile()
         loadLanguages()
 
-        setLanguage(Main.settingsManager.getLanguage())
+        setLanguage(LogicTags.settingsManager.getLanguage())
     }
 
     private fun ensureDefaultLanguageFile() {
         if (!languagesDir.exists()) languagesDir.mkdirs()
         val defaultFile = File(languagesDir, "$defaultLang.yml")
         if (!defaultFile.exists()) {
-            Main.instance.getResource("languages/$defaultLang.yml")?.use { input ->
+            LogicTags.instance.getResource("languages/$defaultLang.yml")?.use { input ->
                 defaultFile.outputStream().use { output -> input.copyTo(output) }
             }
         }
@@ -47,13 +47,13 @@ class TranslationManager(
     fun reload() {
         translations.clear()
         loadLanguages()
-        setLanguage(Main.settingsManager.getLanguage())
+        setLanguage(LogicTags.settingsManager.getLanguage())
     }
 
     fun get(key: String, vararg placeholders: Translatable): String {
         val message = translations[lang]?.get(key)
             ?: translations[defaultLang]?.get(key)
-            ?: Main.instance.getResource("languages/$defaultLang.yml")?.use { input ->
+            ?: LogicTags.instance.getResource("languages/$defaultLang.yml")?.use { input ->
                 val config = YamlConfiguration.loadConfiguration(input.reader())
                 config.getString(key)
             }
@@ -78,7 +78,7 @@ class TranslationManager(
         if (translations.containsKey(lang)) {
             this.lang = lang
         } else {
-            Main.instance.logger.info("Language '$lang' not found, using default '$defaultLang'.")
+            LogicTags.instance.logger.info("Language '$lang' not found, using default '$defaultLang'.")
             this.lang = defaultLang
         }
     }

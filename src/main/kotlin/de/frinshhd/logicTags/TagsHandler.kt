@@ -46,7 +46,7 @@ class TagsHandler {
 
     fun spawnPlayers(player: Player, players: List<Player>) {
         players.forEach { otherPlayers ->
-            if (otherPlayers == player && !Main.settingsManager.isSeeOwnTag()) return@forEach
+            if (otherPlayers == player && !LogicTags.settingsManager.isSeeOwnTag()) return@forEach
 
             val tagData = tagsMap[otherPlayers] ?: return@forEach
 
@@ -64,7 +64,7 @@ class TagsHandler {
     fun spawnTextDisplay(player: Player, id: Int, playerToMount: Player, text: String?) {
         val user: User = PacketEvents.getAPI().playerManager.getUser(player)
 
-        if (playerToMount != player && Main.settingsManager.hasCustomTeams()) {
+        if (playerToMount != player && LogicTags.settingsManager.hasCustomTeams()) {
             user.sendPacket(
                 WrapperPlayServerTeams(
                     "customName${playerToMount.name}",
@@ -123,7 +123,7 @@ class TagsHandler {
             spawnTextDisplay(otherPlayer, tagData.entityId, player, text)
         }
 
-        Main.playerTagManager.setTag(player, text)
+        LogicTags.playerTagManager.setTag(player, text)
     }
 
     fun removePlayerTagForPlayer(player: Player, tagData: TagData, isPassive: Boolean = false) {
@@ -142,7 +142,7 @@ class TagsHandler {
         removePlayerTag(tagData, true)
 
         tagsMap[player]?.text = null
-        Main.playerTagManager.removeTag(player)
+        LogicTags.playerTagManager.removeTag(player)
     }
 
     fun removePlayerTag(tagData: TagData, isPassive: Boolean = false) {
@@ -167,8 +167,8 @@ class TagsHandlerPacketListener : PacketListener {
 
                 if (spawnEntityPacket.entityType != EntityTypes.PLAYER) return
 
-                Bukkit.getScheduler().runTask(Main.instance, Runnable {
-                    Main.tagsHandler.spawnPlayers(
+                Bukkit.getScheduler().runTask(LogicTags.instance, Runnable {
+                    LogicTags.tagsHandler.spawnPlayers(
                         event.getPlayer(),
                         listOf(Bukkit.getPlayer(spawnEntityPacket.uuid.get()) ?: return@Runnable)
                     )
@@ -186,9 +186,9 @@ class TagsHandlerPacketListener : PacketListener {
 
                     val playerToDestroy: Player = entity as Player
 
-                    val tagData: TagData = Main.tagsHandler.tagsMap[playerToDestroy] ?: return@forEach
+                    val tagData: TagData = LogicTags.tagsHandler.tagsMap[playerToDestroy] ?: return@forEach
 
-                    Main.tagsHandler.removePlayerTagForPlayer(player, tagData)
+                    LogicTags.tagsHandler.removePlayerTagForPlayer(player, tagData)
                 }
             }
         }
@@ -203,16 +203,16 @@ class TagsHandlerPacketListener : PacketListener {
                 val entityActionPacket = WrapperPlayClientEntityAction(event)
 
                 if (entityActionPacket.action == WrapperPlayClientEntityAction.Action.START_SNEAKING) {
-                    val tagData = Main.tagsHandler.tagsMap[event.getPlayer()] ?: return
-                    Main.tagsHandler.removePlayerTag(tagData, true)
+                    val tagData = LogicTags.tagsHandler.tagsMap[event.getPlayer()] ?: return
+                    LogicTags.tagsHandler.removePlayerTag(tagData, true)
                 }
 
                 if (entityActionPacket.action == WrapperPlayClientEntityAction.Action.STOP_SNEAKING) {
-                    val tagData = Main.tagsHandler.tagsMap[event.getPlayer()] ?: return
+                    val tagData = LogicTags.tagsHandler.tagsMap[event.getPlayer()] ?: return
 
-                    Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+                    Bukkit.getScheduler().runTaskLater(LogicTags.instance, Runnable {
                         tagData.players.forEach { player ->
-                            Main.tagsHandler.spawnTextDisplay(player, tagData.entityId, event.getPlayer(), tagData.text)
+                            LogicTags.tagsHandler.spawnTextDisplay(player, tagData.entityId, event.getPlayer(), tagData.text)
                         }
                     }, 3L)
                 }
@@ -229,9 +229,9 @@ class TagsHandlerListener : Listener {
     fun onPlayerQuit(event: PlayerQuitEvent) {
         val player: Player = event.getPlayer()
 
-        val tagData = Main.tagsHandler.tagsMap[player] ?: return
+        val tagData = LogicTags.tagsHandler.tagsMap[player] ?: return
 
-        Main.tagsHandler.removePlayerTag(tagData)
+        LogicTags.tagsHandler.removePlayerTag(tagData)
     }
 }
 

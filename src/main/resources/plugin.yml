@@ -1,6 +1,6 @@
 name: LogicTags
 version: ${project.version}
-main: de.frinshhd.logicTags.Main
+main: de.frinshhd.logicTags.LogicTags
 api-version: '1.19'
 author: "FrinshHD"
 softdepend:

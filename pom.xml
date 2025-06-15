@@ -75,6 +75,13 @@
         </resources>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>codearray</id>
+            <url>https://repos.codearray.dev/releases</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>papermc-repo</id>
