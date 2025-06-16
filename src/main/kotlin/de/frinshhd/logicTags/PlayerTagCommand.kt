@@ -43,17 +43,13 @@ class PlayerTagCommand {
             return
         }
 
-        val tagsMessage = tagsMap.entries
-            .joinToString(
-                separator = "\n",
-                prefix = LogicTags.translationManager.get("tagCommand.availableTags")
-            ) { (id, tag) ->
-                LogicTags.translationManager.get(
-                    "tagCommand.tagDetails",
-                    Translatable("id", id),
-                    Translatable("name", tag.name)
-                )
-            }
+        val tagsMessage = tagsMap.entries.joinToString(
+            separator = "\n", prefix = LogicTags.translationManager.get("tagCommand.availableTags")
+        ) { (id, tag) ->
+            LogicTags.translationManager.get(
+                "tagCommand.tagDetails", Translatable("id", id), Translatable("name", tag.name)
+            )
+        }
 
         MessageFormat.send(sender, tagsMessage)
     }
@@ -82,8 +78,7 @@ class PlayerTagCommand {
 
         LogicTags.tagsHandler.updateText(sender, tagDetails.name)
         MessageFormat.send(
-            sender,
-            LogicTags.translationManager.get("tagCommand.tagChanged", Translatable("tag", tagDetails.name))
+            sender, LogicTags.translationManager.get("tagCommand.tagChanged", Translatable("tag", tagDetails.name))
         )
     }
 
@@ -104,8 +99,7 @@ class PlayerTagCommand {
 
         if (LogicTags.settingsManager.getMaxTagLength() > 0 && tagLength > LogicTags.settingsManager.getMaxTagLength()) {
             MessageFormat.send(
-                sender,
-                LogicTags.translationManager.get(
+                sender, LogicTags.translationManager.get(
                     "tagCommand.tagTooLong",
                     Translatable("maxLength", LogicTags.settingsManager.getMaxTagLength().toString())
                 )
@@ -137,6 +131,17 @@ class PlayerTagCommand {
         MessageFormat.send(sender, LogicTags.translationManager.get("tagCommand.tagsReloaded"))
     }
 
+    @Command("$COMMAND_PREFIX version")
+    @Permission("${LogicTags.PERMISSION_PREFIX}.version")
+    fun tagVersion(sender: CommandSender) {
+        MessageFormat.send(
+            sender, LogicTags.translationManager.get(
+                "tagCommand.version",
+                Translatable("version", LogicTags.instance.description.version),
+            )
+        )
+    }
+
     @Command("$COMMAND_PREFIX help")
     fun tagHelp(sender: CommandSender) {
         val commands = listOf(
@@ -144,28 +149,27 @@ class PlayerTagCommand {
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.tag"))
-            ),
-            null to LogicTags.translationManager.get(
+            ), null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag list"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.list"))
-            ),
-            null to LogicTags.translationManager.get(
+            ), null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag select <id>"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.select"))
-            ),
-            "${LogicTags.PERMISSION_PREFIX}.change" to LogicTags.translationManager.get(
+            ), "${LogicTags.PERMISSION_PREFIX}.change" to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag change <tag>"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.change"))
-            ),
-            null to LogicTags.translationManager.get(
+            ), null to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag remove"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.remove"))
-            ),
-            "${LogicTags.PERMISSION_PREFIX}.reload" to LogicTags.translationManager.get(
+            ), "${LogicTags.PERMISSION_PREFIX}.version" to LogicTags.translationManager.get(
+                "tagCommand.helpCommand",
+                Translatable("command", "/tag version"),
+                Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.version"))
+            ), "${LogicTags.PERMISSION_PREFIX}.reload" to LogicTags.translationManager.get(
                 "tagCommand.helpCommand",
                 Translatable("command", "/tag reload"),
                 Translatable("description", LogicTags.translationManager.get("tagCommand.descriptions.reload"))
