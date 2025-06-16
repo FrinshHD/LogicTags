@@ -30,6 +30,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
+import org.spigotmc.event.entity.EntityDismountEvent
+import org.spigotmc.event.entity.EntityMountEvent
 
 class TagsHandler {
 
@@ -165,9 +167,6 @@ class TagsHandlerPacketListener : PacketListener {
 
         when (event.packetType) {
             PacketType.Play.Server.SPAWN_ENTITY -> {
-                if (event.packetType != PacketType.Play.Server.SPAWN_ENTITY)
-                    return
-
                 val spawnEntityPacket = WrapperPlayServerSpawnEntity(event)
 
                 if (spawnEntityPacket.entityType != EntityTypes.PLAYER) return
@@ -196,6 +195,10 @@ class TagsHandlerPacketListener : PacketListener {
                     LogicTags.tagsHandler.removePlayerTagForPlayer(player, tagData)
                 }
             }
+
+            PacketType.Play.Server.SET_PASSENGERS -> {
+                val setPassengersPacket = WrapperPlayServerSetPassengers(event)
+            }
         }
     }
 
@@ -217,11 +220,15 @@ class TagsHandlerPacketListener : PacketListener {
 
                     Bukkit.getScheduler().runTaskLater(LogicTags.instance, Runnable {
                         tagData.players.forEach { player ->
-                            LogicTags.tagsHandler.spawnTextDisplay(player, tagData.entityId, event.getPlayer(), tagData.text)
+                            LogicTags.tagsHandler.spawnTextDisplay(
+                                player,
+                                tagData.entityId,
+                                event.getPlayer(),
+                                tagData.text
+                            )
                         }
                     }, 3L)
                 }
-
             }
         }
 
@@ -237,6 +244,33 @@ class TagsHandlerListener : Listener {
         val tagData = LogicTags.tagsHandler.tagsMap[player] ?: return
 
         LogicTags.tagsHandler.removePlayerTag(tagData)
+    }
+
+    @EventHandler
+    fun onMountEvent(event: EntityMountEvent) {
+        val mounted: Player = event.mount as? Player ?: return
+
+        val tagData = LogicTags.tagsHandler.tagsMap[mounted] ?: return
+        LogicTags.tagsHandler.removePlayerTag(tagData, true)
+    }
+
+    @EventHandler
+    fun onUnmountEvent(event: EntityDismountEvent) {
+        val mounted: Player = event.dismounted as? Player ?: return
+        val tagData = LogicTags.tagsHandler.tagsMap[mounted] ?: return
+
+        Bukkit.getScheduler().runTask(LogicTags.instance, Runnable {
+            Bukkit.getScheduler().runTaskLater(LogicTags.instance, Runnable {
+                tagData.players.forEach { viewer ->
+                    LogicTags.tagsHandler.spawnTextDisplay(
+                        viewer,
+                        tagData.entityId,
+                        mounted,
+                        tagData.text
+                    )
+                }
+            }, 5L)
+        })
     }
 }
 
