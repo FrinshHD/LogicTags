@@ -114,6 +114,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>dev.vankka</groupId>
+            <artifactId>enhancedlegacytext</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>

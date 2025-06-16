@@ -1,6 +1,7 @@
 package de.frinshhd.logicTags
 
 import de.frinshhd.logicTags.utils.MessageFormat
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.incendo.cloud.annotation.specifier.Greedy
@@ -99,7 +100,9 @@ class PlayerTagCommand {
             return
         }
 
-        if (LogicTags.settingsManager.getMaxTagLength() > 0 && tag.length > LogicTags.settingsManager.getMaxTagLength()) {
+        val tagLength = PlainTextComponentSerializer.plainText().serialize(MessageFormat.build(tag)).length
+
+        if (LogicTags.settingsManager.getMaxTagLength() > 0 && tagLength > LogicTags.settingsManager.getMaxTagLength()) {
             MessageFormat.send(
                 sender,
                 LogicTags.translationManager.get(

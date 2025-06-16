@@ -97,7 +97,7 @@ class TagsHandler {
 
         val holoMeta = holo.entityMeta as TextDisplayMeta
 
-        if (text != null) holoMeta.text = Component.text("${MessageFormat.build(text)}\n\n")
+        if (text != null) holoMeta.text = MessageFormat.build(text).appendNewline().appendNewline()
 
         holoMeta.apply {
             isShadow = false
