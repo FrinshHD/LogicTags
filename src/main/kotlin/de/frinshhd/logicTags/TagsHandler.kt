@@ -65,22 +65,27 @@ class TagsHandler {
         val user: User = PacketEvents.getAPI().playerManager.getUser(player)
 
         if (playerToMount != player && LogicTags.settingsManager.hasCustomTeams()) {
-            user.sendPacket(
-                WrapperPlayServerTeams(
-                    "customName${playerToMount.name}",
-                    WrapperPlayServerTeams.TeamMode.CREATE,
-                    WrapperPlayServerTeams.ScoreBoardTeamInfo(
-                        Component.text(""),
-                        Component.text(""),
-                        Component.text(""),
-                        WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
-                        WrapperPlayServerTeams.CollisionRule.ALWAYS,
-                        NamedTextColor.WHITE,
-                        WrapperPlayServerTeams.OptionData.NONE
-                    ),
-                    playerToMount.name
+            val teamName = "customName${playerToMount.name}"
+            val scoreboard = player.scoreboard
+            val alreadyInTeam = scoreboard.getTeam(teamName)?.hasEntry(playerToMount.name) == true
+            if (!alreadyInTeam) {
+                user.sendPacket(
+                    WrapperPlayServerTeams(
+                        teamName,
+                        WrapperPlayServerTeams.TeamMode.CREATE,
+                        WrapperPlayServerTeams.ScoreBoardTeamInfo(
+                            Component.text(""),
+                            Component.text(""),
+                            Component.text(""),
+                            WrapperPlayServerTeams.NameTagVisibility.ALWAYS,
+                            WrapperPlayServerTeams.CollisionRule.ALWAYS,
+                            NamedTextColor.WHITE,
+                            WrapperPlayServerTeams.OptionData.NONE
+                        ),
+                        playerToMount.name
+                    )
                 )
-            )
+            }
         }
 
         val location = playerToMount.location.clone()
