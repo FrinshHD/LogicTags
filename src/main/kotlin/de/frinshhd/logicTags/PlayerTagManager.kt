@@ -26,7 +26,6 @@ class PlayerTagManager : Listener {
         loadTags()
     }
 
-    // Public API
     fun getTag(player: Player): String? =
         playerTagsConfig.getString("tags.${player.uniqueId}")
 
@@ -56,7 +55,6 @@ class PlayerTagManager : Listener {
             )
         }
 
-    // Private helpers
     private fun setupFile(file: File, config: YamlConfiguration, copyFromResources: Boolean = false) {
         if (!file.exists()) {
             file.parentFile.mkdirs()
